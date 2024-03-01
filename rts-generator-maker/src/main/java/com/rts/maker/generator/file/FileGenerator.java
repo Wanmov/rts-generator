@@ -26,11 +26,9 @@ public class FileGenerator {
         String inputPath = new File(parentFile, "rts-generator-demo-projects/acm-template").getAbsolutePath();
         // 生成静态文件
         StaticFileGenerator.copyFilesByHutool(inputPath, projectPath);//直接生成在根目录
-
-
         // 生成动态文件，会覆盖部分已生成的静态文件
-        String dynamicInputPath = "src/main/resources/templates/MainTemplate.java.ftl";
-        String dynamicOutputPath = projectPath + File.separator + "acm-template/src/com/yupi/acm/MainTemplate.java";
+        String dynamicInputPath = projectPath + File.separator + "src/main/resources/templates/DataModel.java.ftl.ftl";
+        String dynamicOutputPath = projectPath + File.separator + "acm-template/src/com/rts/acm/MainTemplate.java";
         DynamicFileGenerator.doGenerate(dynamicInputPath, dynamicOutputPath, model);
     }
 }

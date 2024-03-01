@@ -1,7 +1,7 @@
 {
   "name": "acm-template-pro-generator",
   "description": "ACM 示例模板生成器",
-  "basePackage": "com.str",
+  "basePackage": "com.rts",
   "version": "1.0",
   "author": "Mona",
   "createTime": "2023-11-22",
@@ -11,8 +11,8 @@
     "type": "dir",
     "files": [
       {
-        "inputPath": "src/com/str/acm/MainTemplate.java.ftl",
-        "outputPath": "src/com/str/acm/MainTemplate.java",
+        "inputPath": "src/com/yupi/acm/MainTemplate.java.ftl",
+        "outputPath": "src/com/rts/acm/MainTemplate.java",
         "type": "file",
         "generateType": "dynamic"
       },
