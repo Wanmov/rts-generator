@@ -6,12 +6,12 @@
   "author": "Mona",
   "createTime": "2023-11-22",
   "fileConfig": {
-    "inputRootPath": "/Users/iooi/Project/rts-generator/rts-generator-demo-projects/acm-template-pro",
+    "inputRootPath": ".source/acm-template-pro",
     "outputRootPath": "generated",
     "type": "dir",
     "files": [
       {
-        "inputPath": "src/com/yupi/acm/MainTemplate.java.ftl",
+        "inputPath": "src/com/rts/acm/MainTemplate.java.ftl",
         "outputPath": "src/com/rts/acm/MainTemplate.java",
         "type": "file",
         "generateType": "dynamic"
