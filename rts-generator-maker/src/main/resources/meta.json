@@ -8,6 +8,7 @@
   "fileConfig": {
     "inputRootPath": ".source/acm-template-pro",
     "outputRootPath": "generated",
+    "sourceRootPath": "/Users/iooi/Project/rts-generator/rts-generator-demo-projects/acm-template-pro",
     "type": "dir",
     "files": [
       {

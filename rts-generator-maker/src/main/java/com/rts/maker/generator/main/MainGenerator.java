@@ -1,5 +1,6 @@
 package com.rts.maker.generator.main;
 
+import cn.hutool.Hutool;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ClassPathResource;
 import cn.hutool.core.util.StrUtil;
@@ -25,6 +26,11 @@ public class MainGenerator {
         if (!FileUtil.exist(outputPath)) {
             FileUtil.mkdir(outputPath);
         }
+
+        // 从原始模板文件复制到生成的代码中
+        String sourceRootPath = meta.getFileConfig().getSourceRootPath();
+        String sourceDestPath = outputPath + File.separator + ".source";
+        FileUtil.copy(sourceRootPath, sourceDestPath,false);
 
         // 读取 resources 目录
         ClassPathResource classPathResource = new ClassPathResource("");
