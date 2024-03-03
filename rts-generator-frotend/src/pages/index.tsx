@@ -1,0 +1,141 @@
+import { listGeneratorVOByPageUsingPOST } from '@/services/backend/generatorController';
+import { PageContainer, ProFormSelect, ProFormText, QueryFilter } from '@ant-design/pro-components';
+import { Card, Input, List, Tabs, Typography, message, Image, Avatar, Tag } from 'antd';
+import React, { useEffect, useState } from 'react';
+import moment from 'moment';
+import { UserOutlined } from '@ant-design/icons';
+
+const DEFAULT_QUERY_PARAMS: PageRequest = {
+  current: 1,
+  pageSize: 4,
+  sortField: 'createTime',
+  sortOrder: 'descend',
+};
+
+const Home: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(true);
+  const [dataList, setDataList] = useState<API.GeneratorVO[]>([]);
+  const [total, setTotal] = useState<number>(0);
+  const [searchParams, setSearchParams] = useState<API.GeneratorQueryRequest>({
+    ...DEFAULT_QUERY_PARAMS,
+  });
+
+  const getGenerators = async () => {
+    setLoading(true);
+    try {
+      const res = await listGeneratorVOByPageUsingPOST(searchParams);
+      setDataList(res.data?.records ?? []);
+      setTotal(res.data?.total ?? 0);
+    } catch (err: any) {
+      message.error('获取数据失败' + err.message);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    getGenerators();
+  }, [searchParams]);
+
+  const tagsList = (tags?: string[]) => {
+    if (!tags || tags.length === 0) {
+      return <></>;
+    }
+    return tags.map((tag) => <Tag key={tag}>{tag}</Tag>);
+  };
+
+  return (
+    <PageContainer>
+      <Input.Search
+        style={{
+          width: '40vw',
+          minWidth: 320,
+        }}
+        placeholder="搜索代码生成器"
+        allowClear
+        enterButton="搜索"
+        size="large"
+        onChange={(e) => {
+          searchParams.searchText = e.target.value;
+        }}
+        onSearch={(value: string) => {
+          setSearchParams({
+            ...searchParams,
+            ...DEFAULT_QUERY_PARAMS,
+            searchText: value,
+          });
+        }}
+      />
+      <Tabs
+        defaultActiveKey="newest"
+        items={[
+          { key: 'newest', label: '最新' },
+          { key: 'recommend', label: '推荐' },
+        ]}
+        onChange={onChange}
+      />
+      <QueryFilter
+        submitter={false}
+        defaultCollapsed={false}
+        span={12}
+        labelWidth="auto"
+        labelAlign="left"
+        style={{ padding: '16px 0' }}
+        onChange={onFilterChange}
+      >
+        <ProFormSelect label="标签" name="tags" mode="tags" />
+        <ProFormText label="名称" name="name" />
+        <ProFormText label="描述" name="description" />
+      </QueryFilter>
+
+      <List<API.GeneratorVO>
+        rowKey="id"
+        loading={loading}
+        grid={{
+          gutter: 16,
+          xs: 1,
+          sm: 2,
+          md: 3,
+          lg: 3,
+          xl: 4,
+          xxl: 4,
+        }}
+        dataSource={dataList}
+        pagination={{
+          current: searchParams.current,
+          pageSize: searchParams.pageSize,
+          total,
+          onChange(current: number, pageSize: number) {
+            setSearchParams({
+              ...searchParams,
+              current,
+              pageSize,
+            });
+          },
+        }}
+        renderItem={(data) => (
+          <List.Item>
+            <Card hoverable cover={<Image alt={data.name} src={data.picture} />}>
+              <Card.Meta
+                title={<a>{data.name}</a>}
+                description={
+                  <Typography.Paragraph ellipsis={{ rows: 2 }} style={{ height: 44 }}>
+                    {data.description}
+                  </Typography.Paragraph>
+                }
+              />
+              {tagsList(data.tags)}
+              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                {moment(data.createTime).fromNow()}
+              </Typography.Text>
+              <div>
+                <Avatar src={data.user?.userAvatar ?? <UserOutlined />} />
+              </div>
+            </Card>
+          </List.Item>
+        )}
+      />
+    </PageContainer>
+  );
+};
+
+export default Home;

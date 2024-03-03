@@ -7,7 +7,7 @@ export default [
       { path: '/user/register', component: './User/Register' },
     ],
   },
-  { path: '/welcome', icon: 'smile', component: './Welcome', name: '欢迎页' },
+  { path: '/', icon: 'home', component: './', name: '主页' },
   {
     path: '/admin',
     icon: 'crown',
@@ -19,6 +19,5 @@ export default [
       { icon: 'table', path: '/admin/generator', component: './Admin/Generator', name: '生成器管理' },
     ],
   },
-  { path: '/', redirect: '/welcome' },
   { path: '*', layout: false, component: './404' },
 ];
