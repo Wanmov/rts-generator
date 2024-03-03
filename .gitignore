@@ -1,6 +1,4 @@
-<<<<<<< HEAD
 .history
-=======
 ### Custom template
 .idea
 rts-generator.iml
@@ -129,4 +127,3 @@ fabric.properties
 # Android studio 3.1+ serialized cache file
 .idea/caches/build_file_checksums.ser
 
->>>>>>> 0f6cf0603a8ab10e77004a25226eb0cbae18af4e
