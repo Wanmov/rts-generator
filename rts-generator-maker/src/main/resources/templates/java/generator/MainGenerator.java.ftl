@@ -6,13 +6,13 @@ import freemarker.template.TemplateException;
 import java.io.File;
 import java.io.IOException;
 
-<#macro generateFile indent fileInfo >
-${indent} inputPath = new File(inputRootPath, "${fileInfo.inputPath}").getAbsolutePath();
-${indent} outputPath = new File(outputRootPath, "${fileInfo.outputPath}").getAbsolutePath();
+<#macro generateFile indent fileInfo>
+${indent}inputPath = new File(inputRootPath, "${fileInfo.inputPath}").getAbsolutePath();
+${indent}outputPath = new File(outputRootPath, "${fileInfo.outputPath}").getAbsolutePath();
 <#if fileInfo.generateType == "static">
-${indent} StaticGenerator.copyFilesByHutool(inputPath, outputPath);
+${indent}StaticGenerator.copyFilesByHutool(inputPath, outputPath);
 <#else>
-${indent} DynamicGenerator.doGenerate(inputPath, outputPath, model);
+${indent}DynamicGenerator.doGenerate(inputPath, outputPath, model);
 </#if>
 </#macro>
 
@@ -34,9 +34,14 @@ public class MainGenerator {
 
         String inputPath;
         String outputPath;
-
         <#list  modelConfig.models as modelInfo>
-        ${modelInfo.type} ${modelInfo.fieldName} = model.${modelInfo.fieldName};
+            <#if modelInfo.groupKey??>
+            <#list modelInfo.models as subModelInfo>
+                ${subModelInfo.type} ${subModelInfo.fieldName} = model.${modelInfo.groupKey}.${subModelInfo.fieldName};
+            </#list>
+            <#else>
+                ${modelInfo.type} ${modelInfo.fieldName} = model.${modelInfo.fieldName};
+            </#if>
         </#list>
 
         <#list fileConfig.files as fileInfo>
