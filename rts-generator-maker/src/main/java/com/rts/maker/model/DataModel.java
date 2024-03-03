@@ -11,13 +11,13 @@ public class DataModel {
     /**
      * 是否生成循环
      */
-    private boolean loop;
+    public boolean loop;
     /**
      * 作者注释
      */
-    private String author;
+    public String author;
     /**
      * 输出信息
      */
-    private String outputText;
+    public String outputText;
 }
