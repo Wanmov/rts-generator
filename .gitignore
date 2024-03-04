@@ -1,6 +1,9 @@
 .history
 ### Custom template
 .idea
+.temp
+target
+generated
 rts-generator.iml
 rts-generator-demo-projects
 

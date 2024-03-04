@@ -65,7 +65,7 @@
             "fieldName": "outputText",
             "type": "String",
             "description": "输出信息",
-            "defaultValue": "sum = ",
+            "defaultValue": "Sum: ",
             "abbr": "o"
           }
         ]
