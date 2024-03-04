@@ -7,6 +7,10 @@ import cn.hutool.json.JSONUtil;
 import com.rts.maker.meta.Meta;
 import com.rts.maker.meta.enums.FileGenerateTypeEnum;
 import com.rts.maker.meta.enums.FileTypeEnum;
+import com.rts.maker.meta.template.enums.FileFilterRangeEnum;
+import com.rts.maker.meta.template.enums.FileFilterRuleEnum;
+import com.rts.maker.meta.template.model.FileFilterConfig;
+import com.rts.maker.meta.template.model.TemplateMakerFileConfig;
 
 import java.io.File;
 import java.nio.file.Paths;
@@ -25,15 +29,15 @@ public class TemplateMaker {
     /**
      * 制作模板
      *
-     * @param meta                元信息
-     * @param originalProjectPath 原项目路径
-     * @param fileInputPathList   文件输入路径
-     * @param modelInfo           模型信息
-     * @param searchStr           搜索字符串
-     * @param id                  id
+     * @param meta                   元信息
+     * @param originalProjectPath    原项目路径
+     * @param modelInfo              模型信息
+     * @param searchStr              搜索字符串
+     * @param id                     id
+     * @param templateMakeFileConfig 模板文件配置
      * @return long
      */
-    private static long makeTemplate(Meta meta, String originalProjectPath, List<String> fileInputPathList, Meta.ModelConfig.ModelInfo modelInfo, String searchStr, Long id) {
+    private static long makeTemplate(Meta meta, String originalProjectPath, TemplateMakerFileConfig templateMakeFileConfig, Meta.ModelConfig.ModelInfo modelInfo, String searchStr, Long id) {
 
         // 如果id为空 则生成新id
         if (id == null) {
@@ -57,24 +61,20 @@ public class TemplateMaker {
         // 需要挖坑的项目根路径
         String sourceRootPath = tempProjectPath + File.separator + FileUtil.getLastPathEle(Paths.get(originalProjectPath));
 
-        ArrayList<Meta.FileConfig.FileInfo> newFileInfoList = new ArrayList<>();
-        // 遍历输入文件
-        for (String fileInputPath : fileInputPathList) {
-            String inputFileAbsolutePath = sourceRootPath + File.separator + fileInputPath;
-            // 一、制作模板文件
-            if (FileUtil.isDirectory(inputFileAbsolutePath)) {
-                List<File> files = FileUtil.loopFiles(inputFileAbsolutePath);
-                for (File file : files) {
-                    Meta.FileConfig.FileInfo fileInfo = makeFileTemplate(modelInfo, searchStr, sourceRootPath, file);
-                    newFileInfoList.add(fileInfo);
-                }
-            } else {
-                Meta.FileConfig.FileInfo fileInfo = makeFileTemplate(modelInfo, searchStr, sourceRootPath, new File(inputFileAbsolutePath));
-                newFileInfoList.add(fileInfo);
+        List<TemplateMakerFileConfig.FileInfoConfig> fileInfoConfigList = templateMakeFileConfig.getFiles();
 
+        // 遍历输入文件
+        List<Meta.FileConfig.FileInfo> newFileInfoList = new ArrayList<>();
+        for (TemplateMakerFileConfig.FileInfoConfig fileInfoConfig : fileInfoConfigList) {
+
+            String inputFileAbsolutePath = sourceRootPath + File.separator + fileInfoConfig.getPath();
+            //得到过滤后的文件列表
+            List<File> fileList = FileFilter.doFileFilter(inputFileAbsolutePath, fileInfoConfig.getFilterConfigList());
+            for (File file : fileList) {
+                Meta.FileConfig.FileInfo fileInfo = makeFileTemplate(modelInfo, searchStr, sourceRootPath, file);
+                newFileInfoList.add(fileInfo);
             }
         }
-
 
         // 三、生成配置文件
         String metaOutputPath = sourceRootPath + File.separator + "meta.json";
@@ -91,7 +91,6 @@ public class TemplateMaker {
             // 去重
             oldMeta.getFileConfig().setFiles(distinctFileInfo(fileInfoList));
             oldMeta.getModelConfig().setModels(distinctModelInfo(modelInfoList));
-
 
             // 输出配置文件
             FileUtil.writeUtf8String(JSONUtil.toJsonPrettyStr(oldMeta), metaOutputPath);
@@ -223,8 +222,27 @@ public class TemplateMaker {
         // String searchStr = "Sum: ";
         String searchStr = "BaseResponse";
 
+        // 文件过滤配置
+        TemplateMakerFileConfig.FileInfoConfig fileInfoConfig1 = new TemplateMakerFileConfig.FileInfoConfig();
+        fileInfoConfig1.setPath(fileInputPath1);
+        List<FileFilterConfig> fileFilterConfigList = new ArrayList<>();
+        FileFilterConfig filterConfig = FileFilterConfig.builder()
+                .range(FileFilterRangeEnum.FILE_NAME.getValue())
+                .rule(FileFilterRuleEnum.CONTAINS.getValue())
+                .value("Base")
+                .build();
+        fileFilterConfigList.add(filterConfig);
+        fileInfoConfig1.setFilterConfigList(fileFilterConfigList);
 
-        makeTemplate(meta, originalProjectPath, inputFilePathList, modelInfo, searchStr, null);
+        TemplateMakerFileConfig.FileInfoConfig fileInfoConfig2 = new TemplateMakerFileConfig.FileInfoConfig();
+        fileInfoConfig2.setPath(fileInputPath2);
+
+        List<TemplateMakerFileConfig.FileInfoConfig> fileInfoConfigList = Arrays.asList(fileInfoConfig1,fileInfoConfig2);
+        TemplateMakerFileConfig templateMakeFileConfig = new TemplateMakerFileConfig();
+        templateMakeFileConfig.setFiles(fileInfoConfigList);
+
+
+        makeTemplate(meta, originalProjectPath,templateMakeFileConfig , modelInfo, searchStr, null);
     }
 
 }
