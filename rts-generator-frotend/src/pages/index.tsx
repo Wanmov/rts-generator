@@ -1,6 +1,6 @@
 import { listGeneratorVOByPageUsingPOST } from '@/services/backend/generatorController';
 import { PageContainer, ProFormSelect, ProFormText, QueryFilter } from '@ant-design/pro-components';
-import { Card, Input, List, Tabs, Typography, message, Image, Avatar, Tag } from 'antd';
+import { Card, Input, List, Tabs, Typography, message, Image, Avatar, Tag, Flex } from 'antd';
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { UserOutlined } from '@ant-design/icons';
@@ -37,41 +37,50 @@ const Home: React.FC = () => {
   }, [searchParams]);
 
   const tagsList = (tags?: string[]) => {
-    if (!tags || tags.length === 0) {
-      return <></>;
-    }
-    return tags.map((tag) => <Tag key={tag}>{tag}</Tag>);
+    if (!tags || tags.length === 0) return <></>;
+
+    return (
+      <div style={{ marginBottom: 8 }}>
+        {tags.map((tag) => (
+          <Tag key={tag}>{tag}</Tag>
+        ))}
+      </div>
+    );
   };
 
   return (
-    <PageContainer>
-      <Input.Search
-        style={{
-          width: '40vw',
-          minWidth: 320,
-        }}
-        placeholder="搜索代码生成器"
-        allowClear
-        enterButton="搜索"
-        size="large"
-        onChange={(e) => {
-          searchParams.searchText = e.target.value;
-        }}
-        onSearch={(value: string) => {
-          setSearchParams({
-            ...searchParams,
-            ...DEFAULT_QUERY_PARAMS,
-            searchText: value,
-          });
-        }}
-      />
+    <PageContainer title={<></>}>
+      <Flex justify="center">
+        <Input.Search
+          style={{
+            width: '40vw',
+            minWidth: 320,
+          }}
+          placeholder="搜索代码生成器"
+          allowClear
+          enterButton="搜索"
+          size="large"
+          onChange={(e) => {
+            searchParams.searchText = e.target.value;
+          }}
+          onSearch={(value: string) => {
+            setSearchParams({
+              ...searchParams,
+              ...DEFAULT_QUERY_PARAMS,
+              searchText: value,
+            });
+          }}
+        />
+      </Flex>
+
       <Tabs
         defaultActiveKey="newest"
         items={[
           { key: 'newest', label: '最新' },
           { key: 'recommend', label: '推荐' },
         ]}
-        onChange={onChange}
+        onChange={() => {}}
+        size="large"
       />
       <QueryFilter
         submitter={false}
@@ -79,8 +88,14 @@ const Home: React.FC = () => {
         span={12}
         labelWidth="auto"
         labelAlign="left"
-        style={{ padding: '16px 0' }}
-        onChange={onFilterChange}
+        style={{ padding: '16px 0', marginBottom: 24 }}
+        onFinish={async (value: API.GeneratorQueryRequest) => {
+          setSearchParams({
+            ...DEFAULT_QUERY_PARAMS,
+            searchText: searchParams.searchText,
+            ...value,
+          });
+        }}
       >
         <ProFormSelect label="标签" name="tags" mode="tags" />
         <ProFormText label="名称" name="name" />
@@ -124,12 +139,14 @@ const Home: React.FC = () => {
                 }
               />
               {tagsList(data.tags)}
-              <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-                {moment(data.createTime).fromNow()}
-              </Typography.Text>
-              <div>
-                <Avatar src={data.user?.userAvatar ?? <UserOutlined />} />
-              </div>
+              <Flex justify="space-between" align="center">
+                <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                  {moment(data.createTime).fromNow()}
+                </Typography.Text>
+                <div>
+                  <Avatar src={data.user?.userAvatar ?? <UserOutlined />} />
+                </div>
+              </Flex>
             </Card>
           </List.Item>
         )}

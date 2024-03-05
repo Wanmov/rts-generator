@@ -1,5 +1,5 @@
 {
-  "name": "yupi-antd-frontend-init",
+  "name": "rts-generator",
   "version": "6.0.0",
   "private": true,
   "description": "An out-of-box UI solution for enterprise applications",
@@ -45,7 +45,7 @@
     "@ant-design/pro-components": "^2.3.57",
     "@ant-design/use-emotion-css": "1.0.4",
     "@umijs/route-utils": "^2.2.2",
-    "antd": "^5.2.2",
+    "antd": "^5.14.2",
     "classnames": "^2.3.2",
     "lodash": "^4.17.21",
     "moment": "^2.29.4",
