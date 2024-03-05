@@ -88,6 +88,8 @@ public class TemplateMaker {
             String inputFileAbsolutePath = sourceRootPath + File.separator + fileInfoConfig.getPath();
             // 得到过滤后的文件列表
             List<File> fileList = FileFilter.doFileFilter(inputFileAbsolutePath, fileInfoConfig.getFilterConfigList());
+            // 不处理已经产生的ftl文件
+            fileList = fileList.stream().filter(file -> !file.getAbsolutePath().endsWith(".ftl")).collect(Collectors.toList());
             for (File file : fileList) {
                 Meta.FileConfig.FileInfo fileInfo = makeFileTemplate(templateMakerModelConfig, sourceRootPath, file);
                 newFileInfoList.add(fileInfo);
