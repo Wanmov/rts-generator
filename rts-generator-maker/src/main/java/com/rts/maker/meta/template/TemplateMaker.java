@@ -178,17 +178,18 @@ public class TemplateMaker {
      * @return {@link Meta.FileConfig.FileInfo}
      */
     private static Meta.FileConfig.FileInfo makeFileTemplate(TemplateMakerModelConfig templateMakerModelConfig, String sourceRootPath, File inputFile) {
-        // 需要挖坑的文件路径
-        String fileInputPath = inputFile.getAbsolutePath().replace(sourceRootPath, "");
-        String fileOutputPath = fileInputPath + ".ftl";
-
-        // 二、使用字符串替换、生成模板文件
+        // 要挖坑的文件绝对路径（用于制作模板）
         String fileInputAbsolutePath = inputFile.getAbsolutePath();
-        String fileOutputAbsolutePath = inputFile.getAbsolutePath() + ".ftl";
+        String fileOutputAbsolutePath = fileInputAbsolutePath + ".ftl";
+
+        // 文件输入输出相对路径（用于生成配置）
+        String fileInputPath = fileInputAbsolutePath.replace(sourceRootPath + "/", "");
+        String fileOutputPath = fileInputPath + ".ftl";
 
         // 如果已有模板文件 - 表示不是第一次制作 则在原有模板文件上修改
         String fileContent;
-        if (FileUtil.exist(fileOutputAbsolutePath)) {
+        boolean hasTemplateFile = FileUtil.exist(fileOutputAbsolutePath);
+        if (hasTemplateFile) {
             fileContent = FileUtil.readUtf8String(fileOutputAbsolutePath);
         } else {
             fileContent = FileUtil.readUtf8String(fileInputAbsolutePath);
@@ -216,13 +217,21 @@ public class TemplateMaker {
         fileInfo.setType(FileTypeEnum.FILE.getValue());
         fileInfo.setGenerateType(FileGenerateTypeEnum.DYNAMIC.getValue());
 
-        // 和源文件内容一致 静态生成
-        if (fileContent.equals(newFileContent)) {
-            fileInfo.setOutputPath(fileInputPath);
-            fileInfo.setGenerateType(FileGenerateTypeEnum.STATIC.getValue());
-        } else {
-            // 输出模板文件
-            fileInfo.setGenerateType(FileGenerateTypeEnum.DYNAMIC.getValue());
+        // 是否修改了文件内容
+        boolean contentEquals = fileContent.equals(newFileContent);
+        // 文件不存在
+        if (!hasTemplateFile) {
+            // 不需要挖坑
+            if (contentEquals) {
+                // 输出 = 输入
+                fileInfo.setOutputPath(fileInputPath);
+                fileInfo.setGenerateType(FileGenerateTypeEnum.STATIC.getValue());
+            } else {
+                // 文件不存在 需要挖坑
+                FileUtil.writeUtf8String(newFileContent, fileOutputAbsolutePath);
+            }
+        } else if (!contentEquals) {
+            // 文件存在 需要挖坑
             FileUtil.writeUtf8String(newFileContent, fileOutputAbsolutePath);
         }
         return fileInfo;
@@ -360,10 +369,6 @@ public class TemplateMaker {
         List<TemplateMakerModelConfig.ModelInfoConfig> modelInfoConfigList = Arrays.asList(modelInfoConfig1, modelInfoConfig2);
         templateMakerModelConfig.setModelInfoConfigList(modelInfoConfigList);
 
-        // 替换变量
-        // String searchStr = "Sum: ";
-        String searchStr = "BaseResponse";
-
         // 文件过滤配置
         TemplateMakerFileConfig templateMakeFileConfig = new TemplateMakerFileConfig();
         TemplateMakerFileConfig.FileInfoConfig fileInfoConfig1 = new TemplateMakerFileConfig.FileInfoConfig();
@@ -389,7 +394,7 @@ public class TemplateMaker {
         fileGroupConfig.setCondition("outputText");
         templateMakeFileConfig.setFileGroupConfig(fileGroupConfig);
 
-        makeTemplate(meta, originalProjectPath, templateMakeFileConfig, templateMakerModelConfig, null);
+        makeTemplate(meta, originalProjectPath, templateMakeFileConfig, templateMakerModelConfig, 1764929282526474240L);
     }
 
 }
