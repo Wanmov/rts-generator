@@ -9,6 +9,7 @@ import cn.hutool.json.JSONUtil;
 import com.rts.maker.meta.Meta;
 import com.rts.maker.meta.enums.FileGenerateTypeEnum;
 import com.rts.maker.meta.enums.FileTypeEnum;
+import com.rts.maker.meta.template.model.TemplateMakerConfig;
 import com.rts.maker.meta.template.model.TemplateMakerFileConfig;
 import com.rts.maker.meta.template.model.TemplateMakerModelConfig;
 
@@ -54,7 +55,7 @@ public class TemplateMaker {
         }
 
         // 遍历模型进行多轮替换
-        List<TemplateMakerModelConfig.ModelInfoConfig> modelInfoConfigList = templateMakerModelConfig.getModelInfoConfigList();
+        List<TemplateMakerModelConfig.ModelInfoConfig> modelInfoConfigList = templateMakerModelConfig.getModels();
         // 转换为 ModelInfo
         List<Meta.ModelConfig.ModelInfo> inputModelList = modelInfoConfigList.stream().map(modelConfig -> {
             Meta.ModelConfig.ModelInfo modelInfo = new Meta.ModelConfig.ModelInfo();
@@ -105,7 +106,7 @@ public class TemplateMaker {
         }
 
         // 三、生成配置文件
-        String metaOutputPath = sourceRootPath + File.separator + "meta.json";
+        String metaOutputPath = tempProjectPath + File.separator + "meta.json";
 
         // 如果已有配置文件 - 表示不是第一次制作 则在原有配置文件上修改
         if (FileUtil.exist(metaOutputPath)) {
@@ -221,7 +222,7 @@ public class TemplateMaker {
         TemplateMakerModelConfig.ModelGroupConfig modelGroupConfig = templateMakerModelConfig.getModelGroupConfig();
         String newFileContent = fileContent;
         String replacement;
-        for (TemplateMakerModelConfig.ModelInfoConfig modelInfo : templateMakerModelConfig.getModelInfoConfigList()) {
+        for (TemplateMakerModelConfig.ModelInfoConfig modelInfo : templateMakerModelConfig.getModels()) {
             // 不是分组
             if (modelGroupConfig == null) {
                 replacement = String.format("${%s}", modelInfo.getFieldName());
@@ -235,8 +236,9 @@ public class TemplateMaker {
 
         // 文件配置信息
         Meta.FileConfig.FileInfo fileInfo = new Meta.FileConfig.FileInfo();
-        fileInfo.setInputPath(fileInputPath);
-        fileInfo.setOutputPath(fileOutputPath);
+        // 反转输入输出路径
+        fileInfo.setInputPath(fileOutputPath);
+        fileInfo.setOutputPath(fileInputPath);
         fileInfo.setType(FileTypeEnum.FILE.getValue());
         fileInfo.setGenerateType(FileGenerateTypeEnum.DYNAMIC.getValue());
 
@@ -282,7 +284,7 @@ public class TemplateMaker {
             List<Meta.FileConfig.FileInfo> newFileInfoList = new ArrayList<>(tempFileInfoList.stream()
                     .flatMap(fileInfo -> fileInfo.getFiles().stream())
                     .collect(
-                            Collectors.toMap(Meta.FileConfig.FileInfo::getInputPath, Function.identity(), (o1, o2) -> o2))
+                            Collectors.toMap(Meta.FileConfig.FileInfo::getOutputPath, Function.identity(), (o1, o2) -> o2))
                     .values());
             // 使用新的 group 配置
             Meta.FileConfig.FileInfo newFileInfo = CollUtil.getLast(tempFileInfoList);
@@ -299,7 +301,7 @@ public class TemplateMaker {
         resultList.addAll(new ArrayList<>(fileInfoList.stream()
                 .filter(fileInfo -> StrUtil.isBlank(fileInfo.getGroupKey()))
                 .collect(
-                        Collectors.toMap(Meta.FileConfig.FileInfo::getInputPath, Function.identity(), (o1, o2) -> o2)
+                        Collectors.toMap(Meta.FileConfig.FileInfo::getOutputPath, Function.identity(), (o1, o2) -> o2)
                 ).values()));
         return resultList;
     }
@@ -351,4 +353,20 @@ public class TemplateMaker {
                 ).values()));
         return resultList;
     }
+
+    /**
+     * 制作模板
+     *
+     * @param templateMakerConfig 模板制作器配置
+     * @return long
+     */
+    public static long makeTemplate(TemplateMakerConfig templateMakerConfig) {
+        Meta meta = templateMakerConfig.getMeta();
+        String originalProjectPath = templateMakerConfig.getOriginProjectPath();
+        TemplateMakerFileConfig templateMakerFileConfig = templateMakerConfig.getFileConfig();
+        TemplateMakerModelConfig templateMakerModelConfig = templateMakerConfig.getModelConfig();
+        Long id = templateMakerConfig.getId();
+        return makeTemplate(meta, originalProjectPath, templateMakerFileConfig, templateMakerModelConfig, id);
+    }
+
 }

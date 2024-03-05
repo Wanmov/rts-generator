@@ -1,6 +1,9 @@
 package com.rts.maker.meta.template;
 
+import cn.hutool.core.io.resource.ResourceUtil;
+import cn.hutool.json.JSONUtil;
 import com.rts.maker.meta.Meta;
+import com.rts.maker.meta.template.model.TemplateMakerConfig;
 import com.rts.maker.meta.template.model.TemplateMakerFileConfig;
 import com.rts.maker.meta.template.model.TemplateMakerModelConfig;
 import org.junit.Test;
@@ -39,7 +42,7 @@ public class TemplateMakerTest {
         modelInfoConfig1.setDefaultValue("jdbc:mysql://localhost:3306/my_db");
         modelInfoConfig1.setReplaceText("jdbc:mysql://localhost:3306/my_db");
         List<TemplateMakerModelConfig.ModelInfoConfig> modelInfoConfigList = Collections.singletonList(modelInfoConfig1);
-        templateMakerModelConfig.setModelInfoConfigList(modelInfoConfigList);
+        templateMakerModelConfig.setModels(modelInfoConfigList);
 
         long id = TemplateMaker.makeTemplate(meta, originalProjectPath, templateMakerFileConfig, templateMakerModelConfig, 1735281524670181376L);
         System.out.println(id);
@@ -71,9 +74,18 @@ public class TemplateMakerTest {
         modelInfoConfig1.setType("String");
         modelInfoConfig1.setReplaceText("BaseResponse");
         List<TemplateMakerModelConfig.ModelInfoConfig> modelInfoConfigList = Collections.singletonList(modelInfoConfig1);
-        templateMakerModelConfig.setModelInfoConfigList(modelInfoConfigList);
+        templateMakerModelConfig.setModels(modelInfoConfigList);
 
         long id = TemplateMaker.makeTemplate(meta, originalProjectPath, templateMakerFileConfig, templateMakerModelConfig, 1735281524670181376L);
+        System.out.println(id);
+    }
+
+    @Test
+    public void testMakeTemplateWithJSON() {
+        //从json中读取配置
+        String configStr = ResourceUtil.readUtf8Str("templateMaker.json");
+        TemplateMakerConfig templateMakerConfig = JSONUtil.toBean(configStr, TemplateMakerConfig.class);
+        long id = TemplateMaker.makeTemplate(templateMakerConfig);
         System.out.println(id);
     }
 

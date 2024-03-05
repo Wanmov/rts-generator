@@ -15,7 +15,7 @@ public class TemplateMakerModelConfig {
 
     private ModelGroupConfig modelGroupConfig;
 
-    private List<ModelInfoConfig> modelInfoConfigList;
+    private List<ModelInfoConfig> models;
 
 
     @Data
