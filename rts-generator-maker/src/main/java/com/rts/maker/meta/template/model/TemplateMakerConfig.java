@@ -20,4 +20,6 @@ public class TemplateMakerConfig {
 
     TemplateMakerModelConfig modelConfig = new TemplateMakerModelConfig();
 
+    TemplateMakerOutputConfig outputConfig = new TemplateMakerOutputConfig();
+
 }

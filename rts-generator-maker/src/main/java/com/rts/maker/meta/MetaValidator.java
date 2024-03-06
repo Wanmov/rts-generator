@@ -42,7 +42,7 @@ public class MetaValidator {
                 // 生成中间参数
                 List<Meta.ModelConfig.ModelInfo> subModelInfoList = modelInfo.getModels();
                 String allArgsStr = modelInfo.getModels().stream()
-                        .map(subModelInfo -> String.format("\"-%s\"", subModelInfo.getAbbr()))
+                        .map(subModelInfo -> String.format("\"--%s\"", subModelInfo.getFieldName()))
                         .collect(Collectors.joining(", "));
                 modelInfo.setAllArgsStr(allArgsStr);
                 continue;
