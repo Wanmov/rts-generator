@@ -13,10 +13,7 @@ import com.rts.web.model.enums.FileUploadBizEnum;
 import com.rts.web.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -27,8 +24,8 @@ import java.util.Arrays;
 /**
  * 文件接口
  *
- * @author  
- * @from  
+ * @author
+ * @from
  */
 @RestController
 @RequestMapping("/file")
