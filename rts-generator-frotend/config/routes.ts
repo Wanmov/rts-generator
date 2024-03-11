@@ -9,6 +9,13 @@ export default [
   },
   { path: '/', icon: 'home', component: './', name: '主页' },
   {
+    path: '/generator/create',
+    icon: 'plus',
+    component: './Generator/Create',
+    name: '创建生成器',
+    hideInMenu: true,
+  },
+  {
     path: '/test/file',
     icon: 'home',
     component: './Test/File',
