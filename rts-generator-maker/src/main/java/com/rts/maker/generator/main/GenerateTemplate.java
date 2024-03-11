@@ -15,12 +15,33 @@ import java.io.IOException;
 
 public abstract class GenerateTemplate {
 
+    /**
+     * 生成
+     *
+     * @throws TemplateException    模板异常
+     * @throws IOException          ioexception
+     * @throws InterruptedException 中断异常
+     */
     public void doGenerate() throws TemplateException, IOException, InterruptedException {
         Meta meta = MetaManager.getMetaObject();
-
-        // 0、输出根路径
+        // 输出跟路径
         String projectPath = System.getProperty("user.dir");
         String outputPath = projectPath + File.separator + "generated" + File.separator + meta.getName();
+        doGenerate(meta, outputPath);
+    }
+
+    /**
+     * 生成
+     *
+     * @param meta       元
+     * @param outputPath 输出路径
+     * @throws TemplateException    模板异常
+     * @throws IOException          ioexception
+     * @throws InterruptedException 中断异常
+     */
+    public void doGenerate(Meta meta, String outputPath) throws TemplateException, IOException, InterruptedException {
+
+        // 0、输出根路径
         if (!FileUtil.exist(outputPath)) {
             FileUtil.mkdir(outputPath);
         }
@@ -66,7 +87,7 @@ public abstract class GenerateTemplate {
     protected void generateCode(Meta meta, String outputPath) throws IOException, TemplateException {
         // 读取 resources 目录
         ClassPathResource classPathResource = new ClassPathResource("");
-        String inputResourcePath = classPathResource.getAbsolutePath();
+        String inputResourcePath = "";
 
         // Java 包基础路径
         String outputBasePackage = meta.getBasePackage();

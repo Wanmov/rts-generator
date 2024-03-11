@@ -17,7 +17,7 @@ import com.rts.web.constant.UserConstant;
 import com.rts.web.exception.BusinessException;
 import com.rts.web.exception.ThrowUtils;
 import com.rts.web.manager.CosManager;
-import com.rts.web.meta.Meta;
+import com.rts.maker.meta.Meta;
 import com.rts.web.model.dto.generator.*;
 import com.rts.web.model.entity.Generator;
 import com.rts.web.model.entity.User;

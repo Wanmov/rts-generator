@@ -1,6 +1,6 @@
 package com.rts.web.model.dto.generator;
 
-import com.rts.web.meta.Meta;
+import com.rts.maker.meta.Meta;
 import lombok.Data;
 
 import java.io.Serializable;
