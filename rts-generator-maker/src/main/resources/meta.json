@@ -8,7 +8,7 @@
   "fileConfig": {
     "inputRootPath": ".source/acm-template-pro",
     "outputRootPath": "generated",
-    "sourceRootPath": "/Users/iooi/Project/rts-generator/rts-generator-demo-projects/acm-template-pro",
+    "sourceRootPath": "/Users/iooi/Project/rts-generator/rts-generator-demo-projects/acm-template",
     "type": "dir",
     "files": [
       {
@@ -69,6 +69,12 @@
             "abbr": "o"
           }
         ]
+      },
+      {
+        "fieldName": "basePackage",
+        "type": "String",
+        "description": "基础包名",
+        "defaultValue": "com.rts"
       },
       {
         "fieldName": "loop",
