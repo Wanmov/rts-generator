@@ -4,6 +4,7 @@ import { Card, Input, List, Tabs, Typography, message, Image, Avatar, Tag, Flex 
 import React, { useEffect, useState } from 'react';
 import moment from 'moment';
 import { UserOutlined } from '@ant-design/icons';
+import { Link } from '@umijs/max';
 
 const DEFAULT_QUERY_PARAMS: PageRequest = {
   current: 1,
@@ -129,25 +130,27 @@ const Home: React.FC = () => {
         }}
         renderItem={(data) => (
           <List.Item>
-            <Card hoverable cover={<Image alt={data.name} src={data.picture} />}>
-              <Card.Meta
-                title={<a>{data.name}</a>}
-                description={
-                  <Typography.Paragraph ellipsis={{ rows: 2 }} style={{ height: 44 }}>
-                    {data.description}
-                  </Typography.Paragraph>
-                }
-              />
-              {tagsList(data.tags)}
-              <Flex justify="space-between" align="center">
-                <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-                  {moment(data.createTime).fromNow()}
-                </Typography.Text>
-                <div>
-                  <Avatar src={data.user?.userAvatar ?? <UserOutlined />} />
-                </div>
-              </Flex>
-            </Card>
+            <Link to={`/generator/detail/${data.id}`}>
+              <Card hoverable cover={<Image alt={data.name} src={data.picture} />}>
+                <Card.Meta
+                  title={<a>{data.name}</a>}
+                  description={
+                    <Typography.Paragraph ellipsis={{ rows: 2 }} style={{ height: 44 }}>
+                      {data.description}
+                    </Typography.Paragraph>
+                  }
+                />
+                {tagsList(data.tags)}
+                <Flex justify="space-between" align="center">
+                  <Typography.Text type="secondary" style={{ fontSize: 12 }}>
+                    {moment(data.createTime).fromNow()}
+                  </Typography.Text>
+                  <div>
+                    <Avatar src={data.user?.userAvatar ?? <UserOutlined />} />
+                  </div>
+                </Flex>
+              </Card>
+            </Link>
           </List.Item>
         )}
       />

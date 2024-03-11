@@ -210,7 +210,7 @@ declare namespace API {
 
   type getGeneratorVOByIdUsingGETParams = {
     /** id */
-    id?: number;
+    id?: string;
   };
 
   type getUserByIdUsingGETParams = {

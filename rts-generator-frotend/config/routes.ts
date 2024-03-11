@@ -17,8 +17,15 @@ export default [
   {
     path: '/generator/update',
     icon: 'plus',
-    component: './Generator/Add',
+    component: './Generator/Create',
     name: '修改生成器',
+    hideInMenu: true,
+  },
+  {
+    path: '/generator/detail/:id',
+    icon: 'home',
+    component: './Generator/Detail',
+    name: '生成器详情',
     hideInMenu: true,
   },
   {

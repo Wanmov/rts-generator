@@ -52,8 +52,7 @@ const GeneratorCreate: React.FC = () => {
   };
 
   useEffect(() => {
-    if (!generatorId) return;
-    getDataById();
+    if (generatorId) getDataById();
   }, [generatorId]);
 
   const AddGenerator = async (values: API.GeneratorAddRequest) => {
