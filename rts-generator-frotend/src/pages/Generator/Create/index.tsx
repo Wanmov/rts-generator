@@ -20,6 +20,7 @@ import { history, useSearchParams } from '@umijs/max';
 import { COS_HOST } from '@/constants';
 import ModelConfigForm from './components/ModelConfigForm';
 import FileConfigForm from './components/FileConfigForm';
+import GeneratorMaker from './components/GeneratorMaker';
 
 const GeneratorCreate: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -143,6 +144,14 @@ const GeneratorCreate: React.FC = () => {
             <ProFormItem label="产物包" name="distPath">
               <FileUploader biz="generator_dist" description="请上传生成器文件压缩包" />
             </ProFormItem>
+
+            <GeneratorMaker
+              meta={{
+                ...basicInfo,
+                ...modelConfig,
+                ...fileConfig,
+              }}
+            />
           </StepsForm.StepForm>
         </StepsForm>
       )}

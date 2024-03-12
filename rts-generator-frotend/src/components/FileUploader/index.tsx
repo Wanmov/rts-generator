@@ -7,7 +7,7 @@ const { Dragger } = Upload;
 
 interface FileUploaderProps {
   biz: string;
-  onChange: (fileList: UploadFile[]) => void;
+  onChange?: (fileList: UploadFile[]) => void;
   value?: UploadFile[];
   description?: string;
 }
@@ -23,7 +23,7 @@ const FileUploader: React.FC<FileUploaderProps> = (props) => {
     fileList: value,
     disabled: loading,
     onChange: ({ fileList }) => {
-      onChange(fileList);
+      onChange?.(fileList);
     },
     customRequest: async (fileObj: any) => {
       setLoading(true);

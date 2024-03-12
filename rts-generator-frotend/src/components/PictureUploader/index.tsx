@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 
 interface PicUploaderProps {
   biz: string;
-  onChange: (url: string) => void;
+  onChange?: (url: string) => void;
   value?: string;
 }
 
@@ -26,7 +26,7 @@ const PicUploader: React.FC<PicUploaderProps> = (props) => {
         const res = await uploadFileUsingPOST({ biz }, {}, fileObj.file);
         // 拼接完整图片路径
         const fullPath: string = COS_HOST + res.data;
-        onChange(fullPath ?? '');
+        onChange?.(fullPath ?? '');
         fileObj.onSuccess(res.data);
       } catch (e) {
         message.error('上传失败');
