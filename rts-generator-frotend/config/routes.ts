@@ -1,4 +1,5 @@
 export default [
+  { path: '/', icon: 'home', component: './', name: '主页' },
   {
     path: '/user',
     layout: false,
@@ -7,7 +8,6 @@ export default [
       { path: '/user/register', component: './User/Register' },
     ],
   },
-  { path: '/', icon: 'home', component: './', name: '主页' },
   {
     path: '/generator/create',
     icon: 'plus',
@@ -19,6 +19,13 @@ export default [
     icon: 'plus',
     component: './Generator/Create',
     name: '修改生成器',
+    hideInMenu: true,
+  },
+  {
+    path: '/generator/use/:id',
+    icon: 'plus',
+    component: './Generator/Use',
+    name: '使用生成器',
     hideInMenu: true,
   },
   {
