@@ -40,7 +40,7 @@ export const requestConfig: RequestConfig = {
       if (!data) {
         throw new Error('服务异常');
       }
-      if (requestPath.includes('download')) {
+      if (data instanceof Blob) {
         return response;
       }
       // 错误码处理
